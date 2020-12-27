@@ -57,5 +57,17 @@ defmodule Shop.ShopperTest do
       assert {:ok, %Cart{}} = Shopper.delete_cart(cart)
       assert_raise Ecto.NoResultsError, fn -> Shopper.get_cart!(cart.id) end
     end
+
+    test "cart_total/1" do
+      cart = cart_fixture()
+      assert Shopper.cart_total(cart) == 0
+      
+      product = product_fixture()
+      {:ok, cart} = Shopper.add_to_cart(cart, product)
+      assert Shopper.cart_total(cart) == 199
+
+      {:ok, cart} = Shopper.add_to_cart(cart, product)
+      assert Shopper.cart_total(cart) == 398
+    end
   end
 end

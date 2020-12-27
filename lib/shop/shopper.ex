@@ -82,4 +82,12 @@ defmodule Shop.Shopper do
   def delete_cart(%Cart{} = cart) do
     Repo.delete(cart)
   end
+
+  @doc """
+  Calculates cart total.
+  """
+  def cart_total(%Cart{} = cart) do
+    cart = Repo.preload(cart, items: :product)
+    Enum.reduce(cart.items, 0, fn item, acc -> acc + item.product.price end)
+  end
 end

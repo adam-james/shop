@@ -39,6 +39,10 @@ defmodule ShopWeb.PageLive do
     "$" <> to_string(dollars) <> "." <> to_string(cents)
   end
 
+  defp cart_total(cart) do
+    cart |> Shopper.cart_total() |> format_price()
+  end
+
   defp broadcast(cart) do
     ShopWeb.Endpoint.broadcast!("cart:#{cart.id}", "updated_cart", cart)
   end

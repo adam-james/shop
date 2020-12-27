@@ -14,6 +14,7 @@
   </section>
   <section class="column">
     <h3 class="title">Cart <%= @cart.id %></h3>
+    <h4 class="title is-4">Total <%= cart_total(@cart) %></h4>
     <%= for item <- @cart.items do %>
       <li class="box">
         <div class="is-flex is-justify-content-space-between is-align-content-center">
