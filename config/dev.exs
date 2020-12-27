@@ -2,8 +2,6 @@ use Mix.Config
 
 # Configure your database
 config :shop, Shop.Repo,
-  username: "postgres",
-  password: "postgres",
   database: "shop_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
