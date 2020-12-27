@@ -1,39 +1,33 @@
 defmodule ShopWeb.PageLive do
   use ShopWeb, :live_view
 
+  alias Shop.Catalog
+  alias Shop.Shopper
+
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, query: "", results: %{})}
+    products = Catalog.list_products()
+    {:ok, cart} = Shopper.create_cart()
+    cart = cart |> Shop.Repo.preload(items: :product)
+    {:ok, assign(socket, products: products, cart: cart)}
   end
 
-  @impl true
-  def handle_event("suggest", %{"q" => query}, socket) do
-    {:noreply, assign(socket, results: search(query), query: query)}
+  def handle_event("add-to-cart", %{"id" => id} = value, socket) do
+    product = Catalog.get_product!(id)
+    {:ok, cart} = Shopper.add_to_cart(socket.assigns.cart, product)
+    {:noreply, assign(socket, cart: cart)}
   end
 
-  @impl true
-  def handle_event("search", %{"q" => query}, socket) do
-    case search(query) do
-      %{^query => vsn} ->
-        {:noreply, redirect(socket, external: "https://hexdocs.pm/#{query}/#{vsn}")}
-
-      _ ->
-        {:noreply,
-         socket
-         |> put_flash(:error, "No dependencies found matching \"#{query}\"")
-         |> assign(results: %{}, query: query)}
-    end
+  def handle_event("remove-from-cart", %{"id" => id} = value, socket) do
+    cart_item = Shop.Repo.get(Shopper.CartItem, id)
+    {:ok, cart} = Shopper.remove_from_cart(cart_item)
+    {:noreply, assign(socket, cart: cart)}
   end
 
-  defp search(query) do
-    if not ShopWeb.Endpoint.config(:code_reloader) do
-      raise "action disabled when not in development"
-    end
+  defp format_price(price) do
+    dollars = div(price, 100)
+    cents = rem(price, 100)
 
-    for {app, desc, vsn} <- Application.started_applications(),
-        app = to_string(app),
-        String.starts_with?(app, query) and not List.starts_with?(desc, ~c"ERTS"),
-        into: %{},
-        do: {app, vsn}
+    "$" <> to_string(dollars) <> "." <> to_string(cents)
   end
 end
