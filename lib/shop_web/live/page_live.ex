@@ -5,10 +5,8 @@ defmodule ShopWeb.PageLive do
   alias Shop.Shopper
 
   @impl true
-  def mount(_params, _session, socket) do
+  def mount(_params, %{"cart" => cart}, socket) do
     products = Catalog.list_products()
-    {:ok, cart} = Shopper.create_cart()
-    cart = cart |> Shop.Repo.preload(items: :product)
     {:ok, assign(socket, products: products, cart: cart)}
   end
 

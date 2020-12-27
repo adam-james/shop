@@ -15,9 +15,9 @@ defmodule ShopWeb.Router do
   end
 
   scope "/", ShopWeb do
-    pipe_through :browser
+    pipe_through [:browser, :ensure_cart]
 
-    live "/", PageLive, :index
+    live "/", PageLive, :index, session: {ShopWeb.Router, :get_cart, []}
   end
 
   # Other scopes may use custom stacks.
@@ -39,5 +39,23 @@ defmodule ShopWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: ShopWeb.Telemetry
     end
+  end
+
+  defp ensure_cart(conn, _) do
+    case get_session(conn, :cart_id) do
+      nil ->
+        {:ok, cart} = Shop.Shopper.create_cart()
+        cart = Shop.Repo.preload(cart, items: :product)
+        conn
+        |> put_session(:cart_id, cart.id)
+        |> assign(:cart, cart)
+      cart_id ->
+        cart = Shop.Shopper.get_cart!(cart_id)
+        assign(conn, :cart, cart)
+    end
+  end
+
+  def get_cart(conn) do
+    %{"cart" => conn.assigns.cart}
   end
 end
