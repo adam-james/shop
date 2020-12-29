@@ -33,10 +33,16 @@ defmodule ShopWeb.PageLive do
   end
 
   defp format_price(price) do
-    dollars = div(price, 100)
-    cents = rem(price, 100)
+    dollars = div(price, 100) |> to_string()
+    cents = rem(price, 100) |> to_string()
+    cents =
+      if String.length(cents) == 1 do
+        "0" <> cents
+      else
+        cents
+      end
 
-    "$" <> to_string(dollars) <> "." <> to_string(cents)
+    "$" <> dollars <> "." <> cents
   end
 
   defp cart_total(cart) do
