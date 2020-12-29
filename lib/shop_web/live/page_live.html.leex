@@ -6,7 +6,13 @@
       <li class="box">
         <div class="is-flex is-justify-content-space-between is-align-content-center">
           <p><%= product.title %> - <%= format_price(product.price) %></p>
-          <button phx-click="add-to-cart" phx-value-id="<%= product.id %>" class="button is-primary">Add to Cart</button>
+          <button
+            phx-click="add-to-cart"
+            phx-value-id="<%= product.id %>"
+            class="button is-primary"
+          >
+            Add to Cart
+          </button>
         </div>
       </li>
     <% end %>
@@ -14,12 +20,22 @@
   </section>
   <section class="column">
     <h3 class="title">Cart <%= @cart.id %></h3>
-    <h4 class="title is-4">Total <%= cart_total(@cart) %></h4>
-    <%= for item <- @cart.items do %>
+    <h4 class="title is-4">Total <%= format_price(@cart_summary.total) %></h4>
+    <%= for item_summary <- @cart_summary.item_summaries do %>
       <li class="box">
         <div class="is-flex is-justify-content-space-between is-align-content-center">
-          <p><%= item.product.title %> - <%= format_price(item.product.price) %></p>
-          <button phx-click="remove-from-cart" phx-value-id="<%= item.id %>" class="button is-danger">Remove from Cart</button>
+          <p>
+            <%= item_summary.product_title %>
+            <%= format_price(item_summary.price_per) %> x <%= item_summary.quantity %> =
+            <%= format_price(item_summary.total) %>
+          </p>
+          <button
+            phx-click="remove-from-cart"
+            phx-value-id="<%= item_summary.first_id %>"
+            class="button is-danger"
+          >
+            Remove from Cart
+          </button>
         </div>
       </li>
     <% end %>
