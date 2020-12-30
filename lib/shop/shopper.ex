@@ -27,9 +27,7 @@ defmodule Shop.Shopper do
           |> Repo.update()
     end
 
-    cart =
-      get_cart!(cart.id)
-      |> Repo.preload(items: :product)
+    cart = get_cart!(cart.id)
 
     {:ok, cart}
   end
@@ -43,9 +41,7 @@ defmodule Shop.Shopper do
       |> CartItem.changeset(%{quantity: quantity})
       |> Repo.update()
 
-    cart =
-      get_cart!(cart_item.cart_id)
-      |> Repo.preload(items: :product)
+    cart = get_cart!(cart_item.cart_id)
 
     {:ok, cart}
   end
@@ -55,9 +51,7 @@ defmodule Shop.Shopper do
   """
   def remove_from_cart(%CartItem{} = cart_item) do
     {:ok, _} = Repo.delete(cart_item)
-    cart =
-      get_cart!(cart_item.cart_id)
-      |> Repo.preload(items: :product)
+    cart = get_cart!(cart_item.cart_id)
 
     {:ok, cart}
   end
@@ -76,7 +70,19 @@ defmodule Shop.Shopper do
       ** (Ecto.NoResultsError)
 
   """
-  def get_cart!(id), do: Repo.get!(Cart, id) |> Repo.preload(items: :product)
+  def get_cart!(id) do
+    query = from c in Cart,
+              where: c.id == ^id,
+              preload: [
+                items:
+                  ^(from ci in CartItem,
+                    where: ci.cart_id == ^id,
+                    preload: [:product],
+                    order_by: [desc: ci.inserted_at])
+              ]              
+
+    Repo.get!(query, id)
+  end
 
   @doc """
   Creates a cart.

@@ -23,6 +23,8 @@
     <h4 class="title is-4">Total <%= cart_total(@cart) %></h4>
     <%= for item <- @cart.items do %>
       <li class="box">
+        <h3><%= item.inserted_at %></h3>
+
         <p>
           <%= item.product.title %>
           <%= format_price(item.product.price) %> x <%= item.quantity %> =
