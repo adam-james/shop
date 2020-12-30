@@ -13,9 +13,38 @@ defmodule Shop.Shopper do
   Adds a product to cart.
   """
   def add_to_cart(%Cart{} = cart, %Product{} = product) do
-    {:ok, _} = %CartItem{cart_id: cart.id, product_id: product.id} |> Repo.insert()
+    query = from ci in CartItem,
+              where: ci.cart_id == ^cart.id and ci.product_id == ^product.id,
+              limit: 1
+
+    case Repo.all(query) do
+      [] ->
+        {:ok, _} = %CartItem{cart_id: cart.id, product_id: product.id} |> Repo.insert()
+      [cart_item | []] ->
+        {:ok, _} =
+          cart_item
+          |> CartItem.changeset(%{quantity: cart_item.quantity + 1})
+          |> Repo.update()
+    end
+
     cart =
       get_cart!(cart.id)
+      |> Repo.preload(items: :product)
+
+    {:ok, cart}
+  end
+
+  @doc """
+  Updates a cart item's quantity.
+  """
+  def update_item_quantity(%CartItem{} = cart_item, quantity) when quantity > 0 do
+    {:ok, _} =
+      cart_item
+      |> CartItem.changeset(%{quantity: quantity})
+      |> Repo.update()
+
+    cart =
+      get_cart!(cart_item.cart_id)
       |> Repo.preload(items: :product)
 
     {:ok, cart}
@@ -88,6 +117,8 @@ defmodule Shop.Shopper do
   """
   def cart_total(%Cart{} = cart) do
     cart = Repo.preload(cart, items: :product)
-    Enum.reduce(cart.items, 0, fn item, acc -> acc + item.product.price end)
+    Enum.reduce(cart.items, 0, fn item, acc ->
+      acc + (item.product.price * item.quantity)
+    end)
   end
 end

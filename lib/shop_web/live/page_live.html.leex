@@ -20,23 +20,35 @@
   </section>
   <section class="column">
     <h3 class="title">Cart <%= @cart.id %></h3>
-    <h4 class="title is-4">Total <%= format_price(@cart_summary.total) %></h4>
-    <%= for item_summary <- @cart_summary.item_summaries do %>
+    <h4 class="title is-4">Total <%= cart_total(@cart) %></h4>
+    <%= for item <- @cart.items do %>
       <li class="box">
-        <div class="is-flex is-justify-content-space-between is-align-content-center">
-          <p>
-            <%= item_summary.product_title %>
-            <%= format_price(item_summary.price_per) %> x <%= item_summary.quantity %> =
-            <%= format_price(item_summary.total) %>
-          </p>
-          <button
-            phx-click="remove-from-cart"
-            phx-value-id="<%= item_summary.first_id %>"
-            class="button is-danger"
-          >
-            Remove from Cart
-          </button>
-        </div>
+        <p>
+          <%= item.product.title %>
+          <%= format_price(item.product.price) %> x <%= item.quantity %> =
+          <%= format_price(item.product.price * item.quantity) %>
+        </p>
+
+        <%# TODO change in Shoppper.change_cart_item/2 %>
+        <%= f = form_for(Shop.Shopper.CartItem.changeset(item, %{}), "#", [phx_submit: :update_quantity]) %>
+          <%= hidden_input f, :id %>
+
+          <div class="field">
+            <%= label f, :quantity, class: "label" %>
+            <%= number_input f, :quantity, min: "1", class: "input" %>
+            <%= error_tag f, :quantity %>          
+          </div>
+
+          <%= submit "Update quantity", class: "button" %>
+        </form>
+
+        <button
+          phx-click="remove-from-cart"
+          phx-value-id="<%= item.id %>"
+          class="button is-danger"
+        >
+          Remove from Cart
+        </button>
       </li>
     <% end %>
   </section>
