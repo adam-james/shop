@@ -46,9 +46,11 @@ defmodule ShopWeb.Router do
       nil ->
         {:ok, cart} = Shop.Shopper.create_cart()
         cart = Shop.Repo.preload(cart, items: :product)
+
         conn
         |> put_session(:cart_id, cart.id)
         |> assign(:cart, cart)
+
       cart_id ->
         cart = Shop.Shopper.get_cart!(cart_id)
         assign(conn, :cart, cart)

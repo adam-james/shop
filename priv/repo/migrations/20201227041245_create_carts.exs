@@ -3,9 +3,7 @@ defmodule Shop.Repo.Migrations.CreateCarts do
 
   def change do
     create table(:carts) do
-
       timestamps()
     end
-
   end
 end

@@ -12,14 +12,15 @@
 
 alias Shop.Catalog
 
-unless Catalog.list_products |> length() > 0 do
+unless Catalog.list_products() |> length() > 0 do
   [
     %{title: "Apple", price: 199},
     %{title: "Orange", price: 299},
     %{title: "Pear", price: 259},
     %{title: "Banana", price: 159},
-    %{title: "Peach", price: 399},
-  ] |> Enum.each(fn attrs ->
+    %{title: "Peach", price: 399}
+  ]
+  |> Enum.each(fn attrs ->
     Catalog.create_product(attrs)
   end)
 end

@@ -76,7 +76,7 @@ defmodule Shop.ShopperTest do
     test "cart_total/1" do
       cart = cart_fixture()
       assert Shopper.cart_total(cart) == 0
-      
+
       product = product_fixture()
       {:ok, cart} = Shopper.add_to_cart(cart, product)
       assert Shopper.cart_total(cart) == 199

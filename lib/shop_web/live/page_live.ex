@@ -28,7 +28,11 @@ defmodule ShopWeb.PageLive do
   end
 
   @impl true
-  def handle_event("update_quantity", %{"cart_item" => %{"quantity" => quantity, "id" => id}} = _value, socket) do
+  def handle_event(
+        "update_quantity",
+        %{"cart_item" => %{"quantity" => quantity, "id" => id}} = _value,
+        socket
+      ) do
     cart_item = Shop.Repo.get(Shopper.CartItem, id)
     {:ok, cart} = Shopper.update_item_quantity(cart_item, quantity)
     broadcast(cart)
@@ -43,6 +47,7 @@ defmodule ShopWeb.PageLive do
   defp format_price(price) do
     dollars = div(price, 100) |> to_string()
     cents = rem(price, 100) |> to_string()
+
     cents =
       if String.length(cents) == 1 do
         "0" <> cents
