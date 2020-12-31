@@ -45,17 +45,7 @@ defmodule ShopWeb.PageLive do
   end
 
   defp format_price(price) do
-    dollars = div(price, 100) |> to_string()
-    cents = rem(price, 100) |> to_string()
-
-    cents =
-      if String.length(cents) == 1 do
-        "0" <> cents
-      else
-        cents
-      end
-
-    "$" <> dollars <> "." <> cents
+    ShopWeb.LayoutView.format_price(price)
   end
 
   defp cart_total(cart) do

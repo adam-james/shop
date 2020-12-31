@@ -1,0 +1,6 @@
+<h3 class="title">Product</h3>
+<p>Title: <%= @product.title %></p>
+<p>Price: <%= ShopWeb.LayoutView.format_price(@product.price) %></p>
+
+<span><%= link "Edit", to: Routes.product_path(@conn, :edit, @product) %></span>
+<span><%= link "Back", to: Routes.product_path(@conn, :index) %></span>

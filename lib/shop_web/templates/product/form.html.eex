@@ -1,0 +1,40 @@
+<%= form_for @changeset, @action, [class: "form"], fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="notification is-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= label f, :title, class: "label" %>
+
+    <%= if has_error?(f, :title) do %>
+      <%= text_input f, :title, class: "input is-danger" %>
+    <% else %>
+      <%= text_input f, :title, class: "input" %>
+    <% end %>
+
+    <p class="help is-danger"><%= error_tag f, :title %>  </p>
+  </div>
+
+  <div class="field">
+    <%= label f, :price, class: "label" %>
+
+    <%= if has_error?(f, :price) do %>
+      <%= number_input f, :price, class: "input is-danger" %>
+    <% else %>
+      <%= number_input f, :price, class: "input" %>
+    <% end %>
+
+    <p class="help is-danger"><%= error_tag f, :price %>  </p>
+  </div>
+
+  <div class="field is-grouped">
+    <div class="control">
+      <%= link "Cancel", to: Routes.product_path(@conn, :index), class: "button is-link is-light" %>
+    </div>
+    <div class="control">
+      <%= submit "Submit", class: "button is-link" %>
+    </div>
+  </div>
+<% end %>

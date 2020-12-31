@@ -1,0 +1,3 @@
+<h3 class="title">Edit Product</h3>
+
+<%= render "form.html", Map.put(assigns, :action, Routes.product_path(@conn, :update, @product)) %>

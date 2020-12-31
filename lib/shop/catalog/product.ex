@@ -14,5 +14,6 @@ defmodule Shop.Catalog.Product do
     product
     |> cast(attrs, [:title, :price])
     |> validate_required([:title, :price])
+    |> validate_number(:price, greater_than: 0)
   end
 end

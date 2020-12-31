@@ -1,5 +1,6 @@
 defmodule ShopWeb.Router do
   use ShopWeb, :router
+  import Plug.BasicAuth
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -14,10 +15,20 @@ defmodule ShopWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :admin do
+    plug :basic_auth, Application.compile_env(:shop, :basic_auth)
+  end
+
   scope "/", ShopWeb do
     pipe_through [:browser, :ensure_cart]
 
     live "/", PageLive, :index, session: {ShopWeb.Router, :get_cart, []}
+  end
+
+  scope "/admin", ShopWeb do
+    pipe_through [:browser, :admin]
+
+    resources "/products", ProductController
   end
 
   # Other scopes may use custom stacks.
