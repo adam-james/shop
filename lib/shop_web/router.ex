@@ -23,6 +23,7 @@ defmodule ShopWeb.Router do
     pipe_through [:browser, :ensure_cart]
 
     live "/", PageLive, :index, session: {ShopWeb.Router, :get_cart, []}
+    live "/cart", CartLive, :index, session: {ShopWeb.Router, :get_cart, []}
   end
 
   scope "/admin", ShopWeb do

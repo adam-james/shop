@@ -132,4 +132,15 @@ defmodule Shop.Shopper do
       acc + item.product.price * item.quantity
     end)
   end
+
+  @doc """
+  Get total quantity of items in cart.
+  """
+  def cart_item_count(%Cart{} = cart) do
+    cart = Repo.preload(cart, :items)
+
+    Enum.reduce(cart.items, 0, fn item, acc ->
+      acc + item.quantity 
+    end)
+  end
 end
