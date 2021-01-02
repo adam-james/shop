@@ -7,7 +7,7 @@ defmodule ShopWeb.PageLive do
   @impl true
   def mount(_params, %{"cart" => cart}, socket) do
     products = Catalog.list_products()
-    ShopWeb.Endpoint.subscribe("cart:#{cart.id}")
+    if connected?(socket), do: ShopWeb.Endpoint.subscribe("cart:#{cart.id}")
     {:ok, assign(socket, products: products, cart: cart)}
   end
 
