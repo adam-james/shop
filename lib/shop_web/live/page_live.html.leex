@@ -31,7 +31,6 @@
           <%= format_price(item.product.price * item.quantity) %>
         </p>
 
-        <%# TODO change in Shoppper.change_cart_item/2 %>
         <%= f = form_for(Shop.Shopper.CartItem.changeset(item, %{}), "#", [phx_submit: :update_quantity]) %>
           <%= hidden_input f, :id %>
 
