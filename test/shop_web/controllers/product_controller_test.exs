@@ -75,6 +75,7 @@ defmodule ShopWeb.ProductControllerTest do
     test "deletes chosen product", %{conn: conn, product: product} do
       conn = delete(conn, Routes.product_path(conn, :delete, product))
       assert redirected_to(conn) == Routes.product_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.product_path(conn, :show, product))
       end

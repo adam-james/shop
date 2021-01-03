@@ -4,6 +4,6 @@ defmodule ShopWeb.ProductView do
   def has_error?(form, field) do
     form.errors
     |> Keyword.get_values(field)
-    |> fn values -> !Enum.empty?(values) end.()
+    |> (fn values -> !Enum.empty?(values) end).()
   end
 end

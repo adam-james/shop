@@ -13,14 +13,10 @@
 alias Shop.Catalog
 
 unless Catalog.list_products() |> length() > 0 do
-  [
-    %{title: "Apple", price: 199},
-    %{title: "Orange", price: 299},
-    %{title: "Pear", price: 259},
-    %{title: "Banana", price: 159},
-    %{title: "Peach", price: 399}
-  ]
-  |> Enum.each(fn attrs ->
+  Enum.each(0..500, fn _ ->
+    title = Faker.Commerce.En.product_name()
+    price = :rand.uniform(10_000)
+    attrs = %{title: title, price: price}
     Catalog.create_product(attrs)
   end)
 end

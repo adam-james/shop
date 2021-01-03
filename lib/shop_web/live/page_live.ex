@@ -5,10 +5,28 @@ defmodule ShopWeb.PageLive do
   alias Shop.Shopper
 
   @impl true
-  def mount(_params, %{"cart" => cart}, socket) do
-    products = Catalog.list_products()
+  def mount(params, %{"cart" => cart}, socket) do
+    page = Catalog.list_products(params)
     if connected?(socket), do: ShopWeb.Endpoint.subscribe("cart:#{cart.id}")
-    {:ok, assign(socket, products: products, cart: cart)}
+
+    {:ok,
+     assign(socket,
+       products: page.entries,
+       total_pages: page.total_pages,
+       page: page.page_number,
+       cart: cart
+     )}
+  end
+
+  @imple true
+  def handle_params(params, _uri, socket) do
+    page = Catalog.list_products(params)
+    {:noreply,
+     assign(socket,
+       products: page.entries,
+       total_pages: page.total_pages,
+       page: page.page_number
+     )}
   end
 
   @impl true

@@ -17,8 +17,8 @@ defmodule Shop.Catalog do
       [%Product{}, ...]
 
   """
-  def list_products do
-    Repo.all(Product)
+  def list_products(params) do
+    Repo.paginate(Product, params)
   end
 
   @doc """

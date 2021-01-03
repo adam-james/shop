@@ -140,7 +140,7 @@ defmodule Shop.Shopper do
     cart = Repo.preload(cart, :items)
 
     Enum.reduce(cart.items, 0, fn item, acc ->
-      acc + item.quantity 
+      acc + item.quantity
     end)
   end
 end
