@@ -10,10 +10,12 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+alias Shop.Repo
+alias Shop.Catalog.{Product}
 alias Shop.Catalog
 
-unless Catalog.list_products() |> length() > 0 do
-  Enum.each(0..500, fn _ ->
+unless Repo.all(Product) |> length() > 0 do
+  Enum.each(1..500, fn _ ->
     title = Faker.Commerce.En.product_name()
     price = :rand.uniform(10_000)
     attrs = %{title: title, price: price}

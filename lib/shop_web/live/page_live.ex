@@ -9,24 +9,13 @@ defmodule ShopWeb.PageLive do
     page = Catalog.list_products(params)
     if connected?(socket), do: ShopWeb.Endpoint.subscribe("cart:#{cart.id}")
 
-    {:ok,
-     assign(socket,
-       products: page.entries,
-       total_pages: page.total_pages,
-       page: page.page_number,
-       cart: cart
-     )}
+    {:ok, assign(socket, page: page, cart: cart)}
   end
 
   @imple true
   def handle_params(params, _uri, socket) do
     page = Catalog.list_products(params)
-    {:noreply,
-     assign(socket,
-       products: page.entries,
-       total_pages: page.total_pages,
-       page: page.page_number
-     )}
+    {:noreply, assign(socket, page: page)}
   end
 
   @impl true

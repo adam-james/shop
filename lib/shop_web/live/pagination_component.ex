@@ -4,90 +4,42 @@ defmodule ShopWeb.PaginationComponent do
 
   def render(assigns) do
     ~L"""
-    <nav class="pagination is-centered" role="navigation" aria-label="pagination">
-      <%= live_patch "Previous Page", to: Routes.live_path(@socket, @mod, %{"page" => @page - 1}),
-                                      class: "pagination-previous",
-                                      disabled: @page == 1 %>
-      <%= live_patch "Next Page", to: Routes.live_path(@socket, @mod, %{"page" => @page + 1}),
-                                  class: "pagination-next",
-                                  disabled: @page == @total_pages %>
+    <nav class="pagination" role="navigation" aria-label="pagination">
+      <%= live_patch to: Routes.live_path(@socket, @mod, %{"page" => @page.page_number - 1}),
+                     class: "pagination-previous",
+                     disabled: @page.page_number == 1 do %>
+        <span class="icon">
+          <i class="fas fa-chevron-left"></i>
+        </span>
+      <% end %>
+      <%= live_patch to: Routes.live_path(@socket, @mod, %{"page" => @page.page_number + 1}),
+                     class: "pagination-next",
+                     disabled: @page.page_number == @page.total_pages do %>
+        <span class="icon">
+          <i class="fas fa-chevron-right"></i>
+        </span>
+      <% end %>
 
       <ul class="pagination-list">
-        <%= cond do %>
-        <% @page == 1 -> %>
-          <li>
-            <%= live_patch "1", to: Routes.live_path(@socket, @mod, %{"page" => 1}), class: "pagination-link is-current", aria_label: "Goto page 1", disabled: true %>
-          </li>
-          <li>
-            <%= live_patch @page + 1, to: Routes.live_path(@socket, @mod, %{"page" => @page + 1}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @page + 2, to: Routes.live_path(@socket, @mod, %{"page" => @page + 2}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
+        <%= live_patch "1", to: Routes.live_path(@socket, @mod, %{"page" => 1}),
+                            class: (if @page.page_number == 1, do: "pagination-link is-current", else: "pagination-link"), 
+                            aria_label: "Goto page 1", 
+                            disabled: @page.page_number == 1 %>
+        <%= if @page.total_pages > 2 do %>
           <li><span class="pagination-ellipsis">&hellip;</span></li>
-          <li>
-            <%= live_patch @total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @total_pages}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-        <% @page == 2 -> %>
-          <li>
-            <%= live_patch "1", to: Routes.live_path(@socket, @mod, %{"page" => 1}), class: "pagination-link", aria_label: "Goto page 1" %>
-          </li>
-          <li>
-            <%= live_patch @page, to: Routes.live_path(@socket, @mod, %{"page" => @page }), class: "pagination-link is-current", disabled: true, aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @page + 1, to: Routes.live_path(@socket, @mod, %{"page" => @page + 1}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
+        <% end %>
+        <%= if @page.total_pages > 2 && @page.page_number != 1 && @page.page_number != @page.total_pages do %>
+          <%= live_patch @page.page_number, to: Routes.live_path(@socket, @mod, %{"page" => @page.page_number}),
+                                            class: "pagination-link is-current", 
+                                            aria_label: "Goto page " <> to_string(@page.page_number), 
+                                            disabled: true %>
           <li><span class="pagination-ellipsis">&hellip;</span></li>
-          <li>
-            <%= live_patch @total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @total_pages}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-        <% @page == @total_pages - 1 -> %>
-          <li>
-            <%= live_patch "1", to: Routes.live_path(@socket, @mod, %{"page" => 1}), class: "pagination-link", aria_label: "Goto page 1" %>
-          </li>
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
-          <li>
-            <%= live_patch @page - 1, to: Routes.live_path(@socket, @mod, %{"page" => @page - 1}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @page, to: Routes.live_path(@socket, @mod, %{"page" => @page}), class: "pagination-link is-current", disabled: true,  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @total_pages}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-        <% @page == @total_pages -> %>
-          <li>
-            <%= live_patch "1", to: Routes.live_path(@socket, @mod, %{"page" => 1}), class: "pagination-link", aria_label: "Goto page 1" %>
-          </li>
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
-          <li>
-            <%= live_patch @page - 2, to: Routes.live_path(@socket, @mod, %{"page" => @page - 2}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @page - 1, to: Routes.live_path(@socket, @mod, %{"page" => @page - 1}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @total_pages}), class: "pagination-link is-current", disabled: true,  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-        <% true -> %>
-          <li>
-            <%= live_patch "1", to: Routes.live_path(@socket, @mod, %{"page" => 1}), class: "pagination-link", aria_label: "Goto page 1" %>
-          </li>
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
-          <li>
-            <%= live_patch @page - 1, to: Routes.live_path(@socket, @mod, %{"page" => @page - 1}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li>
-            <%= live_patch @page, to: Routes.live_path(@socket, @mod, %{"page" => @total_pages}), class: "pagination-link is-current",  aria_label: "Goto page " <> to_string(@total_pages), disabled: true %>
-          </li>
-          <li>
-            <%= live_patch @page + 1, to: Routes.live_path(@socket, @mod, %{"page" => @page + 1}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
-          <li>
-            <%= live_patch @total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @total_pages}), class: "pagination-link",  aria_label: "Goto page " <> to_string(@total_pages) %>
-          </li>
+        <% end %>
+        <%= if @page.total_pages > 1 do %>
+          <%= live_patch @page.total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @page.total_pages}),
+                                            class: (if @page.page_number == @page.total_pages, do: "pagination-link is-current", else: "pagination-link"), 
+                                            aria_label: "Goto page " <> to_string(@page.total_pages),
+                                            disabled: @page.page_number == @page.total_pages %>
         <% end %>
       </ul>
     </nav>

@@ -4,11 +4,10 @@
   <h3 class="title">Products</h3>
 
   <%= live_component @socket, ShopWeb.PaginationComponent, page: @page,
-                                                           total_pages: @total_pages,
                                                            mod: ShopWeb.PageLive %>
 
   <ul>
-  <%= for product <- @products do %>
+  <%= for product <- @page.entries do %>
     <li class="box">
       <div class="is-flex is-justify-content-space-between is-align-content-center">
         <p><%= product.title %> - <%= format_price(product.price) %></p>
