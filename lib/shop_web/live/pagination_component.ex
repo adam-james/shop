@@ -25,15 +25,11 @@ defmodule ShopWeb.PaginationComponent do
                             class: (if @page.page_number == 1, do: "pagination-link is-current", else: "pagination-link"), 
                             aria_label: "Goto page 1", 
                             disabled: @page.page_number == 1 %>
-        <%= if @page.total_pages > 2 do %>
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
-        <% end %>
         <%= if @page.total_pages > 2 && @page.page_number != 1 && @page.page_number != @page.total_pages do %>
           <%= live_patch @page.page_number, to: Routes.live_path(@socket, @mod, %{"page" => @page.page_number}),
                                             class: "pagination-link is-current", 
                                             aria_label: "Goto page " <> to_string(@page.page_number), 
                                             disabled: true %>
-          <li><span class="pagination-ellipsis">&hellip;</span></li>
         <% end %>
         <%= if @page.total_pages > 1 do %>
           <%= live_patch @page.total_pages, to: Routes.live_path(@socket, @mod, %{"page" => @page.total_pages}),

@@ -1,6 +1,6 @@
 <%= live_component @socket, ShopWeb.HeaderComponent, cart: @cart %>
 
-<section class="container">
+<section class="container mb-5">
   <h3 class="title">Your Cart</h3>
   <h4 class="title is-4">Total <%= cart_total(@cart) %></h4>
   <%= for item <- @cart.items do %>
